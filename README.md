@@ -116,7 +116,7 @@ npm run db:migrate
 ```
 
 2. Seed the database with initial data:
-``bash
+```bash
 npm run db:seed
 ```
 
