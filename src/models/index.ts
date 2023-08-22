@@ -12,6 +12,7 @@ const sequelize = new Sequelize({
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'friend',
   database: process.env.POSTGRES_NAME || 'postgres', 
+  ssl: true
 });
 
 // Define models
