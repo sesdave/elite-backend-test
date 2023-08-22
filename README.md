@@ -28,7 +28,6 @@ Elite Backend Test is a backend application developed as part of a test for Elit
 - CRUD operations for managing items
 - Rate limiting and request throttling
 - Automatic cleanup of expired database records
-- ... (list any other features of your application)
 
 ## Prerequisites
 
@@ -43,7 +42,7 @@ Before running the application, ensure you have the following installed:
 
 1. Clone the repository:
 
-```bash
+```bash```
 git clone https://github.com/your-username/elite-backend-test.git
 cd elite-backend-test
 
@@ -85,7 +84,7 @@ Authentication is done using JSON Web Tokens (JWT). Users can sign up and log in
 
 Create a `.env` file in the root directory of the project with the following environment variables:
 
-```dotenv
+dotenv
 POSTGRES_NAME=your_db_name
 POSTGRES_USER=your_db_user
 POSTGRES_PASSWORD=your_db_password
@@ -93,7 +92,7 @@ POSTGRES_HOST=your_db_host
 POSTGRES_PORT=5432
 
 REDIS_HOST=your_redis_host
-REDIS_PASSWORD=your_redis_password```
+REDIS_PASSWORD=your_redis_password
 
 
 ## Database and Redis
