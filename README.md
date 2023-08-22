@@ -84,7 +84,7 @@ Authentication is done using JSON Web Tokens (JWT). Users can sign up and log in
 
 Create a `.env` file in the root directory of the project with the following environment variables:
 
-dotenv
+```dotenv
 POSTGRES_NAME=your_db_name
 POSTGRES_USER=your_db_user
 POSTGRES_PASSWORD=your_db_password
@@ -92,7 +92,7 @@ POSTGRES_HOST=your_db_host
 POSTGRES_PORT=5432
 
 REDIS_HOST=your_redis_host
-REDIS_PASSWORD=your_redis_password
+REDIS_PASSWORD=your_redis_password ```dotenv
 
 
 ## Database and Redis
