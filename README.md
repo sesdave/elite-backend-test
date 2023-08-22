@@ -45,14 +45,18 @@ Before running the application, ensure you have the following installed:
 ```bash
 git clone https://github.com/your-username/elite-backend-test.git
 cd elite-backend-test
+```
 
 2. Install dependencies:
+```bash
 npm install
+```
 2. Set up your environment variables by creating a .env file (see Environment Variables).
 
 3. Set up your PostgreSQL database and Redis server (see Database and Redis).
 
 4. Build the project:
+```bash
 npm run build
 
 ```
@@ -60,7 +64,9 @@ npm run build
 ## Usage
 
 To start the application, run:
+```bash
 npm start
+```
 The server will start on the specified port (default is 3000). You can access the API endpoints using a tool like Postman or by making requests from your frontend application.
 
 ## Endpoints
@@ -105,8 +111,14 @@ REDIS_PASSWORD=your_redis_password
 The application uses a PostgreSQL database to store user and item data. Sequelize ORM is used for database operations. To set up the database, follow these steps:
 
 1. Run database migrations:
+```bash
+npm run db:migrate
+```
 
 2. Seed the database with initial data:
+``bash
+npm run db:seed
+```
 
 ### Redis
 
@@ -114,17 +126,11 @@ The application uses Redis for caching and session management. Before running th
 
 ## Testing
 
-Run tests to ensure the stability of the application:
+Run tests using:
+```bash
+npm test
+```
 
-
-## Contributing
-
-Contributions are welcome! If you'd like to contribute, please follow these steps:
-
-1. Open an issue to discuss proposed changes or improvements.
-2. Fork the repository and create a new branch.
-3. Make your changes and test thoroughly.
-4. Submit a pull request, referencing the issue for context.
 
 ## License
 
