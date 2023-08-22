@@ -42,7 +42,7 @@ Before running the application, ensure you have the following installed:
 
 1. Clone the repository:
 
-```bash```
+```bash
 git clone https://github.com/your-username/elite-backend-test.git
 cd elite-backend-test
 
@@ -54,6 +54,8 @@ npm install
 
 4. Build the project:
 npm run build
+
+```
 
 ## Usage
 
@@ -92,7 +94,8 @@ POSTGRES_HOST=your_db_host
 POSTGRES_PORT=5432
 
 REDIS_HOST=your_redis_host
-REDIS_PASSWORD=your_redis_password ```dotenv
+REDIS_PASSWORD=your_redis_password 
+```
 
 
 ## Database and Redis
