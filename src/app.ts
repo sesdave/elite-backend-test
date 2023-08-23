@@ -61,6 +61,10 @@ app.use(session({
     },
   }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 app.use(express.json());
 // Apply the rate limiter middleware to all requests
