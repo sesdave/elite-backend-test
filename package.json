@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/sesdave/elite-backend-test#readme",
   "dependencies": {
+    "@types/aws-sdk": "^2.7.0",
     "@types/node": "^20.4.10",
+    "aws-sdk": "^2.1444.0",
     "bcrypt": "^5.1.0",
     "chai": "^4.3.7",
     "cookie-parser": "^1.4.6",

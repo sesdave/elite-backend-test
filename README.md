@@ -28,6 +28,7 @@ Elite Backend Test is a backend application developed as part of a test for Elit
 - CRUD operations for managing items
 - Rate limiting and request throttling
 - Automatic cleanup of expired database records
+- Queuing for Selling with AWS SQS**: Use AWS Simple Queue Service (SQS) to optimize the selling process and handle maximum quantity selling across multiple requests.
 
 ## Prerequisites
 
@@ -55,7 +56,9 @@ npm install
 
 3. Set up your PostgreSQL database and Redis server (see Database and Redis).
 
-4. Build the project:
+4. Create SQS topic and update url, accessKeyId and secretAccessKey in .env file [See Documentation for details](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html)
+
+5. Build the project:
 ```bash
 npm run build
 
@@ -123,6 +126,21 @@ npm run db:seed
 ### Redis
 
 The application uses Redis for caching and session management. Before running the application, ensure you have a running Redis server. To configure Redis, update the settings in `src/utils/cache.ts`.
+
+## Queuing for Selling with AWS SQS
+
+To enhance the scalability and reliability of the selling process, we use Amazon Simple Queue Service (SQS) for queuing and processing sell requests. This ensures efficient handling of sell requests even during high loads. Here's how you can integrate AWS SQS into the selling process:
+
+# Configuration
+
+1. Obtain your SQS Queue URL from the AWS Management Console.
+2. Set the SQS_QUEUE_URL environment variable in your application with the Queue URL.
+3. Navigate to sellWorker.ts in the worker directory
+4. Run the worker - sellWorker.ts to start Receiving messages
+```bash
+ts-node sellConsumer.ts
+```
+
 
 ## Testing
 

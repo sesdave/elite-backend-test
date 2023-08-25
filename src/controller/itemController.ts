@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { addLot, sellItem, getItemQuantity } from '../services/itemService';
+import { enqueueSellRequest } from '../workers/sellWorker';
+const queueUrl = process.env.queueUrl || "https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev";
+
 
 export const addLotHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,8 +20,15 @@ export const sellItemHandler = async (req: Request, res: Response, next: NextFun
   try {
     const { item } = req.params;
     const { quantity } = req.body;
-    const sold = await sellItem(item, quantity);
-    return res.status(200).json({sold});
+    const sellRequestData = {
+      item,
+      quantity,
+    };
+
+    // Enqueue the sell request using the worker
+    await enqueueSellRequest(sellRequestData, queueUrl);
+    
+    return res.status(200).json({});
   } catch (error) {
     console.error('Error while selling an item:', error);
     next(error)
