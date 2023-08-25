@@ -43,7 +43,7 @@ Before running the application, ensure you have the following installed:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/elite-backend-test.git
+git clone https://github.com/sesdave/elite-backend-test.git
 cd elite-backend-test
 ```
 
