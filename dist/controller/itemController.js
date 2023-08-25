@@ -19,9 +19,8 @@ const sellItemHandler = async (req, res, next) => {
     try {
         const { item } = req.params;
         const { quantity } = req.body;
-        console.log(`Selling item ${quantity} - ${item}`);
-        await (0, itemService_1.sellItem)(item, quantity);
-        return res.status(200).json({});
+        const sold = await (0, itemService_1.sellItem)(item, quantity);
+        return res.status(200).json({ sold });
     }
     catch (error) {
         console.error('Error while selling an item:', error);

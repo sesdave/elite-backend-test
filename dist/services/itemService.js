@@ -31,10 +31,11 @@ const sellItem = async (item, quantity) => {
     // Check if the item exists and has enough non-expired quantity
     const availableQuantity = await (0, exports.getItemQuantity)(item);
     const ravailableQuantity = availableQuantity.quantity;
-    const newQuantity = ravailableQuantity - quantity;
+    console.log(`Avalable ${ravailableQuantity} - ${ravailableQuantity < quantity}`);
     if (ravailableQuantity < quantity) {
         throw (0, errorUtil_1.throwCustomError)('Insufficient quantity available', 400);
     }
+    const newQuantity = ravailableQuantity - quantity;
     console.log(`Sold ${ravailableQuantity} - ${quantity} -${newQuantity}`);
     // Update the database with the sold quantity
     await models_1.Lot.update(//parseInt(stringValue, 10)
@@ -48,110 +49,6 @@ const sellItem = async (item, quantity) => {
     await updateCache(item);
 };
 exports.sellItem = sellItem;
-/*export const getItemQuantity = async (item: string) => {
-  const cachedData = await getAsync(item);
-
-  if (cachedData) {
-    const { quantity } = JSON.parse(cachedData);
-    return quantity;
-  }
-
-  // If cache data not available, fetch from the database
-  const quantity = await getDatabaseItemQuantity(item);
-
-  return quantity;
-};*/
-/*export const getItemQuantity = async (item: string) => {
-  let quantity: number;
-
-  try {
-    const cachedData = await getAsync(item);
-
-    if (cachedData) {
-      const { quantity: cachedQuantity } = JSON.parse(cachedData);
-      quantity = cachedQuantity;
-    } else {
-      // Fetch from the database if cache data is not available
-      quantity = await getDatabaseItemQuantity(item);
-    }
-  } catch (error) {
-    console.error('Error fetching from Redis cache:', error);
-    // Fetch from the database in case of Redis error
-    quantity = await getDatabaseItemQuantity(item);
-  }
-
-  return quantity;
-};*/
-/*export const getItemQuantity = async (item: string) => {
-  let quantity: number;
-
-  try {
-    const cachedData = await getAsync(item) as string;
-
-    if (cachedData) {
-      const cacheData = JSON.parse(cachedData);
-      quantity = cacheData.quantity;
-    } else {
-      // Fetch from the database if cache data is not available
-      quantity = await getDatabaseItemQuantity(item);
-
-      // Update the cache with the fetched quantity
-      if (quantity > 0) {
-        await setAsync(item, { quantity }, Date.now());
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching quantity:', error);
-    quantity = await getDatabaseItemQuantity(item);
-  }
-
-  return quantity;
-};
-*/
-/*export const getItemQuantity = async (item: string) => {
-  try {
-    const cachedData = await getAsync(item) as string;
-
-    if (cachedData) {
-      const cacheData = JSON.parse(cachedData);
-      return cacheData.quantity;
-    } else {
-      const quantity = await getDatabaseItemQuantity(item);
-
-      if (quantity > 0) {
-        await setAsync(item, JSON.stringify({ quantity }), Math.ceil((Date.now() + quantity * 1000) / 1000));
-      }
-
-      return quantity;
-    }
-  } catch (error) {
-    console.error('Error fetching quantity:', error);
-    return await getDatabaseItemQuantity(item);
-  }
-};*/
-/*export const getItemQuantity = async (item: string) => {
-  try {
-    const cachedData = await getAsync<{ quantity: number }>(item);
-
-    if (cachedData) {
-      return cachedData.quantity;
-    } else {
-      const quantity = await getDatabaseItemQuantity(item);
-
-      if (quantity > 0) {
-        const validTill = Date.now() + quantity * 1000;
-        await setAsync(item, { quantity, validTill }, Math.ceil((validTill - Date.now()) / 1000));
-
-       // await setAsync(item, { quantity }, Math.ceil((validTill - Date.now()) / 1000));
-      }
-
-      return quantity;
-    }
-  } catch (error) {
-    console.error('Error fetching quantity:', error);
-    return await getDatabaseItemQuantity(item);
-  }
-};*/
 const getItemQuantity = async (item) => {
     try {
         const cachedData = await (0, cache_1.getAsync)(item);
@@ -203,42 +100,6 @@ const updateCache = async (item) => {
     }
 };
 exports.default = updateCache;
-/*const updateCache = async (item: string) => {
-  // Fetch the latest quantity from the database
-  const quantity = await getDatabaseItemQuantity(item);
-
-  // Update the cache with the latest quantity and validTill
-  if (quantity > 0) {
-    const validTill = Date.now() + (quantity * 1000);
-    await setAsync(item, JSON.stringify({ quantity, validTill }));
-    await expireAsync(item, Math.ceil((validTill - Date.now()) / 1000));
-  }
-};*/
-/*const getDatabaseItemQuantity = async (item: string): Promise<number> => {
-  try {
-    const currentTime = new Date();
-    
-    const lot = await Lot.findOne({
-      where: {
-        item,
-        expiry: { [Op.gt]: currentTime },
-      },
-      attributes: [
-        [sequelize.literal('SUM(quantity)'), 'totalQuantity']
-      ],
-    });
-    console.log(`Total Lot: ${JSON.stringify(lot)}`);
-    //const totalQuantity = lot?.get('totalQuantity') as number || 0;
-    const totalQuantity = lot ? Number(lot.get('totalQuantity')) || 0 : 0;
-    
-    console.log(`Total Quantity: ${totalQuantity}`);
-    return totalQuantity;
-  } catch (error) {
-    console.error('Error while fetching item quantity from the database:', error);
-    throw error; // Simply rethrow the caught error
-  }
-};
-*/
 const getDatabaseItemQuantity = async (item) => {
     try {
         const currentTime = new Date();
@@ -252,7 +113,8 @@ const getDatabaseItemQuantity = async (item) => {
             ],
         });
         console.log(`Total Lot: ${JSON.stringify(lot)}`);
-        const totalQuantity = lot ? safeParseInt(lot.get('totalQuantity')) || 0 : 0;
+        //const totalQuantity = lot?.get('totalQuantity') as number || 0;
+        const totalQuantity = lot ? Number(lot.get('totalQuantity')) || 0 : 0;
         console.log(`Total Quantity: ${totalQuantity}`);
         return totalQuantity;
     }
@@ -260,13 +122,4 @@ const getDatabaseItemQuantity = async (item) => {
         console.error('Error while fetching item quantity from the database:', error);
         throw error; // Simply rethrow the caught error
     }
-};
-// A utility function to parse integers safely
-const safeParseInt = (value) => {
-    if (typeof value === 'bigint') {
-        // If it's a BigInt, try to convert it to a string first
-        return Number(value.toString());
-    }
-    // Otherwise, parse it as a regular number
-    return parseInt(value, 10);
 };

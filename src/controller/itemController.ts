@@ -17,7 +17,6 @@ export const sellItemHandler = async (req: Request, res: Response, next: NextFun
   try {
     const { item } = req.params;
     const { quantity } = req.body;
-    console.log(`Selling item ${quantity} - ${item}`)
     const sold = await sellItem(item, quantity);
     return res.status(200).json({sold});
   } catch (error) {
