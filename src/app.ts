@@ -1,7 +1,6 @@
 require('dotenv').config({ path: './process.env' })
 import express from 'express';
 import session from 'express-session';
-import { Sequelize } from 'sequelize-typescript';
 import { sequelize } from './models';
 import authRoutes from './routes/authRoutes';
 import itemRoutes from './routes/itemRoutes';
