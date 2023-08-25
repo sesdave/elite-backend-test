@@ -10,11 +10,11 @@ const path = require('path');
 // Initialize Sequelize with your database configuration
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: process.env.POSTGRES_HOST || 'pg-2480f26e-developerdavids-8cc4.aivencloud.com',//'localhost',
-  port: Number(process.env.POSTGRES_PORT) || 24745,
-  username: process.env.POSTGRES_USER || 'avnadmin',//'postgres',
-  password: process.env.POSTGRES_PASSWORD || 'AVNS_VEJqirdL2fMNLEmCVqt',//'friend',
-  database: process.env.POSTGRES_NAME || 'defaultdb',//'postgres', 
+  host: process.env.POSTGRES_HOST || 'pg-2480f26e-developerdavids-8cc4.aivencloud.com',//'localhost',//
+  port: Number(process.env.POSTGRES_PORT) || 24745,//24745,
+  username: process.env.POSTGRES_USER || 'avnadmin',//'postgres'
+  password: process.env.POSTGRES_PASSWORD || 'AVNS_VEJqirdL2fMNLEmCVqt',//'friend', //
+  database: process.env.POSTGRES_NAME || 'defaultdb',//'postgres', //
   ssl: true,
   dialectOptions: {
     ssl: {

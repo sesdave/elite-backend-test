@@ -1,20 +1,23 @@
 import { Op } from 'sequelize';
 import { Lot } from '../models';
-import { getAsync, setAsync, expireAsync } from '../utils/cache';
+import { getAsync, setAsync } from '../utils/cache';
 import { sequelize } from '../models';
+import { throwCustomError } from '../utils/errorUtil'
 
 export const addLot = async (item: string, quantity: number, expiry: number) => {
+  console.log(`Add Lot ${quantity} - ${expiry}`)
   // Validate input data
   if (!quantity || !expiry) {
     throw new Error('Invalid input data');
   }
-
+  const t0 = Date.now(); // Current time in milliseconds
   // Add the lot to the database
-  await Lot.create({
+  const lot = await Lot.create({
     item,
     quantity,
-    expiry: new Date(expiry),
+    expiry: t0 + expiry,
   });
+
 
   // Update the cache
   await updateCache(item);
@@ -23,19 +26,24 @@ export const addLot = async (item: string, quantity: number, expiry: number) => 
 export const sellItem = async (item: string, quantity: number) => {
   // Validate input data
   if (!quantity) {
-    throw new Error('Invalid input data');
+    throw throwCustomError('Invalid input data', 400);
   }
 
   // Check if the item exists and has enough non-expired quantity
   const availableQuantity = await getItemQuantity(item);
+  const ravailableQuantity = availableQuantity.quantity
+  
+  console.log(`Avalable ${ravailableQuantity} - ${ravailableQuantity < quantity}`)
 
-  if (availableQuantity < quantity) {
-    throw new Error('Insufficient quantity available');
+  if (ravailableQuantity < quantity) {
+    throw throwCustomError('Insufficient quantity available', 400);
   }
+  const newQuantity = ravailableQuantity - quantity
+  console.log(`Sold ${ravailableQuantity} - ${quantity} -${newQuantity}`)
 
   // Update the database with the sold quantity
-  await Lot.update(
-    { quantity: availableQuantity - quantity },
+  await Lot.update( //parseInt(stringValue, 10)
+    { quantity:  newQuantity },
     {
       where: {
         item,
@@ -48,78 +56,90 @@ export const sellItem = async (item: string, quantity: number) => {
   await updateCache(item);
 };
 
+
 export const getItemQuantity = async (item: string) => {
-  const cachedData = await getAsync(item);
+  try {
+    const cachedData = await getAsync<{ quantity: number; validTill: number }>(item);
 
-  if (cachedData) {
-    const { quantity } = JSON.parse(cachedData);
-    return quantity;
+    if (cachedData) {
+      console.log(`Cached item ${JSON.stringify(cachedData)}`)
+      return {
+        quantity: cachedData.quantity,
+        validTill: cachedData.validTill,
+      };
+    } else {
+      const quantity = await getDatabaseItemQuantity(item);
+      let validTill: number | null = null;  // Initialize validTill as null
+
+      if (quantity > 0) {
+        validTill = Date.now() + quantity * 1000;
+        await setAsync(item, { quantity, validTill }, Math.ceil((validTill - Date.now()) / 1000));
+      }
+
+      return {
+        quantity,
+        validTill: validTill,  // Use the calculated validTill value
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching quantity:', error);
+    return {
+      quantity: await getDatabaseItemQuantity(item),
+      validTill: null,
+    };
   }
-
-  // If cache data not available, fetch from the database
-  const quantity = await getDatabaseItemQuantity(item);
-
-  return quantity;
 };
+
+
+
+
 
 const updateCache = async (item: string) => {
-  // Fetch the latest quantity from the database
-  const quantity = await getDatabaseItemQuantity(item);
+  try {
+    console.log("Update Caching")
+    // Fetch the latest quantity from the database
+    const quantity = await getDatabaseItemQuantity(item);
 
-  // Update the cache with the latest quantity and validTill
-  if (quantity > 0) {
-    const validTill = Date.now() + (quantity * 1000);
-    await setAsync(item, JSON.stringify({ quantity, validTill }));
-    await expireAsync(item, Math.ceil((validTill - Date.now()) / 1000));
+    // Update the cache with the latest quantity and validTill
+    if (quantity > 0) {
+      const validTill = Date.now() + (quantity * 1000);
+      const cacheData = { quantity, validTill };
+      console.log(`Caching ${JSON.stringify(cacheData)}`)
+      
+      // Set the cache data and its expiry
+      await setAsync(item, cacheData, Math.ceil((validTill - Date.now()) / 1000));
+    }
+  } catch (error) {
+    console.error('Error updating cache:', error);
   }
 };
 
-const getDatabaseItemQuantity = async (item: string): Promise<number> => {
-    try {
-      // Fetch the non-expired quantity of the item from the database
-      const currentTime = new Date();
-      const lot = await Lot.findOne({
-        where: {
-          item,
-          expiry: { [Op.gt]: currentTime },
-        },
-        attributes: [[sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity']],
-      });
-  
-      // Get the totalQuantity from the result or default to 0
-      const totalQuantity = lot?.get('totalQuantity') as number || 0;
-      return totalQuantity;
-    } catch (error) {
-      console.error('Error while fetching item quantity from the database:', error);
-      throw new Error('Database Error');
-    }
-  };
-  
-  
-  
-  
-  
-  
+export default updateCache;
 
-/*const getDatabaseItemQuantity = async (item: string) => {
+
+const getDatabaseItemQuantity = async (item: string): Promise<number> => {
   try {
-    // Fetch the non-expired quantity of the item from the database
     const currentTime = new Date();
+    
     const lot = await Lot.findOne({
       where: {
         item,
         expiry: { [Op.gt]: currentTime },
       },
-      attributes: [[sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity']],
+      attributes: [
+        [sequelize.literal('SUM(quantity)'), 'totalQuantity']
+      ],
     });
-
-    const totalQuantity = lot?.get('totalQuantity') || 0;
+    console.log(`Total Lot: ${JSON.stringify(lot)}`);
+    //const totalQuantity = lot?.get('totalQuantity') as number || 0;
+    const totalQuantity = lot ? Number(lot.get('totalQuantity')) || 0 : 0;
+    
+    console.log(`Total Quantity: ${totalQuantity}`);
     return totalQuantity;
   } catch (error) {
     console.error('Error while fetching item quantity from the database:', error);
-    throw new Error('Database Error');
+    throw error; // Simply rethrow the caught error
   }
 };
-*/
 
 
