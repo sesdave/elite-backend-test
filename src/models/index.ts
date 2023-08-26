@@ -19,7 +19,8 @@ const sequelize = new Sequelize({
   dialectOptions: {
     ssl: {
       require: true, // Require SSL
-      ca: fs.readFileSync('../../certs/ca.pem').toString(),
+      ca: fs.readFileSync(path.resolve(__dirname, '../../ca.pem')), // Full path to ca.pem certificate
+      //ca: fs.readFileSync('../certs/ca.pem').toString(),
     },
   },
 });
