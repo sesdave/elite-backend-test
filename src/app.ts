@@ -5,7 +5,7 @@ import { sequelize } from './models';
 import authRoutes from './routes/authRoutes';
 import itemRoutes from './routes/itemRoutes';
 import { performCleanup } from  './cleanup'; 
-import { handleErrors } from '../src/middleware/errorHandler'
+import { handleErrors } from './middleware/errorHandler'
 
 
 import rateLimit from 'express-rate-limit';
