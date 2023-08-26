@@ -33,6 +33,7 @@ export const sellItem = async (item: string, quantity: number) => {
 
   if (ravailableQuantity < quantity) {
     console.log(`Insufficient quantity for ${item}`);
+    return
   }
   const newQuantity = ravailableQuantity - quantity
   console.log(`Sold ${ravailableQuantity} - ${quantity} -${newQuantity}`)
