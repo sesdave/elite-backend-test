@@ -19,7 +19,7 @@ const sequelize = new Sequelize({
   dialectOptions: {
     ssl: {
       require: true, // Require SSL
-      ca: fs.readFileSync('../certs/ca.pem').toString(),
+      ca: fs.readFileSync('../../certs/ca.pem').toString(),
     },
   },
 });
