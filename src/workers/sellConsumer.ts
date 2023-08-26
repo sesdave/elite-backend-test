@@ -3,7 +3,7 @@ import { sellItem } from '../services/itemService';
 
 const processSellRequests = async (queueUrl: string) => {
   try {
-    while (true) {
+   // while (true) {
       console.log("Waiting for Messages!!");
       const maxMessages = 10;
       const messages = await receiveMessages(queueUrl, maxMessages);
@@ -18,7 +18,7 @@ const processSellRequests = async (queueUrl: string) => {
         // Delete the processed message from the queue
         await deleteMessage(queueUrl, message.ReceiptHandle);
       }
-    }
+   // }
   } catch (error) {
     console.error('Error processing sell requests:', error);
     throw error;
