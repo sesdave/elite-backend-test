@@ -3,27 +3,27 @@ import { sellItem } from '../services/itemService';
 
 const processSellRequests = async (queueUrl: string) => {
   try {
-   // while (true) {
-      console.log("Waiting for Messages!!");
-      const maxMessages = 10;
-      const messages = await receiveMessages(queueUrl, maxMessages);
+    const maxMessages = 10;
+    const waitTimeSeconds = 20; // Set the desired wait time
 
-      for (const message of messages) {
-        const { item, quantity } = JSON.parse(message.Body);
-        console.log(`Received Message ${item} - ${quantity}`);
+    const messages = await receiveMessages(queueUrl, maxMessages);
 
-        // Call the sellItem function or your desired logic
-        await sellItem(item, quantity);
+    for (const message of messages) {
+      const { item, quantity } = JSON.parse(message.Body);
+      console.log(`Received Message ${item} - ${quantity}`)
 
-        // Delete the processed message from the queue
-        await deleteMessage(queueUrl, message.ReceiptHandle);
-      }
-   // }
+      // Call the sellItem function or your desired logic
+      await sellItem(item, quantity);
+
+      // Delete the processed message from the queue
+      await deleteMessage(queueUrl, message.ReceiptHandle);
+    }
   } catch (error) {
     console.error('Error processing sell requests:', error);
     throw error;
+  } finally {
+    processSellRequests(queueUrl); // Keep long-polling
   }
 };
 
-// Start processing sell requests
 processSellRequests(process.env.queueUrl || 'https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev');
