@@ -24,10 +24,6 @@ export const addLot = async (item: string, quantity: number, expiry: number) => 
 };
 
 export const sellItem = async (item: string, quantity: number) => {
-  // Validate input data
-  if (!quantity) {
-    throw throwCustomError('Invalid input data', 400);
-  }
 
   // Check if the item exists and has enough non-expired quantity
   const availableQuantity = await getItemQuantity(item);
@@ -36,7 +32,7 @@ export const sellItem = async (item: string, quantity: number) => {
   console.log(`Avalable ${ravailableQuantity} - ${ravailableQuantity < quantity}`)
 
   if (ravailableQuantity < quantity) {
-    throw throwCustomError('Insufficient quantity available', 400);
+    console.log(`Insufficient quantity for ${item}`);
   }
   const newQuantity = ravailableQuantity - quantity
   console.log(`Sold ${ravailableQuantity} - ${quantity} -${newQuantity}`)
