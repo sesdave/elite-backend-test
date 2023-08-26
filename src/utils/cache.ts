@@ -1,10 +1,22 @@
 import Redis from 'ioredis';
 
+const redisURL = process.env.REDIS_URL || 'redis://localhost:6379';
+
+// Parse the Redis URL
+const redisParts = new URL(redisURL);
+
 const redis = new Redis({
+  host: redisParts.hostname,
+  port: Number(redisParts.port),
+  password: redisParts.password,
+});
+
+
+/*const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: Number(process.env.REDIS_PORT) || 6379,
   password: process.env.REDIS_PASSWORD || '',
-});
+});*/
 
 export const getAsync = async <T>(key: string): Promise<T | null> => {
   try {
