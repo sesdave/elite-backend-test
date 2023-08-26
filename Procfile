@@ -1,1 +1,2 @@
-web: nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts
+web: NODE_OPTIONS="--max-old-space-size=512" ts-node src/your-app.ts
+
