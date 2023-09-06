@@ -4,8 +4,8 @@ import { SQS } from 'aws-sdk';
 // Configure your AWS credentials and region
 const awsConfig = {
   region: process.env.region || 'us-west-2',
-  accessKeyId: process.env.accessKeyId || 'AKIAU3UQIOJTZ2QOQ3YO',
-  secretAccessKey: process.env.secretAccessKey || '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',
+  accessKeyId: process.env.accessKeyId || '',
+  secretAccessKey: process.env.secretAccessKey || '',
 };
 
 // Create an instance of the SQS service
