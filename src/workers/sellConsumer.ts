@@ -2,11 +2,12 @@ import { receiveMessages, deleteMessage } from '../messaging/AwsQueuingService';
 import { sellItem } from '../services/itemService';
 
 const processSellRequests = async (queueUrl: string) => {
+  console.log("Entered queue");
   try {
     const maxMessages = 10;
-    const waitTimeSeconds = 20; // Set the desired wait time
 
     const messages = await receiveMessages(queueUrl, maxMessages);
+    console.log("messages", messages);
 
     for (const message of messages) {
       const { item, quantity } = JSON.parse(message.Body);
@@ -26,4 +27,4 @@ const processSellRequests = async (queueUrl: string) => {
   }
 };
 
-processSellRequests(process.env.queueUrl || 'https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev');
+processSellRequests(process.env.SQS_QUEUE_URL || 'https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev');

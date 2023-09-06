@@ -149,6 +149,12 @@ Run tests using:
 npm test
 ```
 
+## Documentation
+
+Api Documentation can be accessed using postman on 
+
+https://documenter.getpostman.com/view/22412718/2s9YBxYb5z
+
 
 ## License
 

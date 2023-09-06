@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { addLot, sellItem, getItemQuantity } from '../services/itemService';
 import { enqueueSellRequest } from '../workers/sellWorker';
-const queueUrl = process.env.queueUrl || "https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev";
+const queueUrl = process.env.SQS_QUEUE_URL || "https://sqs.us-west-2.amazonaws.com/334236250727/elite-dev";
 
 
 export const addLotHandler = async (req: Request, res: Response, next: NextFunction) => {

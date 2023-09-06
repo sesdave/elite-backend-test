@@ -29,7 +29,6 @@ export const sellItem = async (item: string, quantity: number) => {
   const availableQuantity = await getItemQuantity(item);
   const ravailableQuantity = availableQuantity.quantity
   
-  console.log(`Avalable ${ravailableQuantity} - ${ravailableQuantity < quantity}`)
 
   if (ravailableQuantity < quantity) {
     console.log(`Insufficient quantity for ${item}`);
@@ -59,7 +58,6 @@ export const getItemQuantity = async (item: string) => {
     const cachedData = await getAsync<{ quantity: number; validTill: number }>(item);
 
     if (cachedData) {
-      console.log(`Cached item ${JSON.stringify(cachedData)}`)
       return {
         quantity: cachedData.quantity,
         validTill: cachedData.validTill,
