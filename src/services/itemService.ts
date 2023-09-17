@@ -6,7 +6,6 @@ import { throwCustomError } from '../utils/errorUtil'
 import LockService from './lockService'; // Adjust the import path
 
 export const addLot = async (item: string, quantity: number, expiry: number) => {
-  console.log(`Add Lot ${quantity} - ${expiry}`)
   // Validate input data
   if (!quantity || !expiry) {
     throw new Error('Invalid input data');
@@ -57,7 +56,6 @@ export const sellItem = async (item: string, quantity: number) => {
   const lockService = new LockService();
 
   let lock = null;
-  console.log(`About to lock - ${item}, ${quantity}`)
 
   try {
     lock = await lockService.acquireLock(lockKey, lockTimeout);
