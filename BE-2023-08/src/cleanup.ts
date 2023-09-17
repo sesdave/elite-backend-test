@@ -12,7 +12,7 @@ export const performCleanup = async () => {
     await Lot.destroy({
       where: {
         expiry: {
-          [Op.lt]: currentTime, 
+          [Op.lt]: currentTime, // Use Op.lt here
         },
       },
     });

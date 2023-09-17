@@ -4,12 +4,12 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
 const addItemSchema = Joi.object({
-  quantity: Joi.number().required().positive(),
+  quantity: Joi.number().required(),
   expiry: Joi.number().required(),
 });
 
 const addQuantitySchema = Joi.object({
-  quantity: Joi.number().required().positive(),
+  quantity: Joi.number().required(),
 });
 
 export const validateAddItem = (req: Request, res: Response, next: NextFunction) => {

@@ -24,10 +24,9 @@ export const sellItemHandler = async (req: Request, res: Response, next: NextFun
       item,
       quantity,
     };
-    console.log("Enter sellItemHandler")
 
     // Enqueue the sell request using the worker
-    await sellItem(item, quantity);
+    await enqueueSellRequest(sellRequestData, queueUrl);
     
     return res.status(200).json({});
   } catch (error) {

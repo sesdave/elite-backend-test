@@ -1,26 +1,39 @@
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Sequelize, Model } from 'sequelize';
 
 export default (sequelize: Sequelize) => {
-  return sequelize.define('Lot', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+  class Lot extends Model {
+    id!: number;
+    item!: string;
+    quantity!: number;
+    expiry!: Date;
+  }
+
+  Lot.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      item: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      expiry: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
     },
-    item: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    expiry: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-  }, {
-    tableName: 'lots', // Table name in your database
-    timestamps: false, // Disable automatic timestamp fields
-  });
+    {
+      sequelize,
+      tableName: 'lots',
+      timestamps: false,
+    }
+  );
+
+  return Lot;
 };
