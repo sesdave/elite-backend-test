@@ -15,13 +15,13 @@ const sequelize = new Sequelize({
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'friend', 
   database: process.env.POSTGRES_NAME || 'postgres', 
-  /*ssl: true,
+  ssl: true,
   dialectOptions: {
     ssl: {
       require: true, // Require SSL
       ca: fs.readFileSync(path.resolve(__dirname, '../../certs/ca.pem')), // Full path to ca.pem certificate
     },
-  },*/
+  },
 });
 
 // Define models

@@ -20,13 +20,7 @@ export const sellItemHandler = async (req: Request, res: Response, next: NextFun
   try {
     const { item } = req.params;
     const { quantity } = req.body;
-    const sellRequestData = {
-      item,
-      quantity,
-    };
-    console.log("Enter sellItemHandler")
-
-    // Enqueue the sell request using the worker
+    
     await sellItem(item, quantity);
     
     return res.status(200).json({});
